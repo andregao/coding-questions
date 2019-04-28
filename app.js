@@ -1,34 +1,31 @@
-function findFactorialRecursive(number) {
-  // edge case
-  if (number < 1) {
-    if (number === 0) {
-      return 1;
-    }
-    if (number < 0) {
-      return null
-    }
-  }
+function fibonacciRecursive(index) {
   // base case
-  if (number === 1) {
+  if (index === 0) {
+    return 0;
+  }
+  if (index === 1) {
     return 1;
   }
   // recursive case
-  return number * findFactorialRecursive(number - 1);
+  return fibonacciRecursive(index - 1) + fibonacciRecursive(index - 2);
 }
 
-function findFactorialIterative(number) {
-  let result = 1; // for both 0 and 1
-  if (number < 0) {
-    return null;
+function fibonacciIterative(index) {
+  if (index === 0) {
+    return 0;
   }
-  while (number > 1) {
-    result = result * number;
-    number--;
+  if (index === 1) {
+    return 1;
+  }
+  let a = 0, b = 1, result = 0;
+  for (let i = 0; i < index - 1; i++) {
+    result = a + b;
+    let temp = b; // hold on to b
+    b = a + b; // new b
+    a = temp; // new a is old b
   }
   return result;
 }
 
-let target = 1;
-
-console.log(findFactorialRecursive(target));
-console.log(findFactorialIterative(target));
+console.log(fibonacciRecursive(8));
+console.log(fibonacciIterative(8));
