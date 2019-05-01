@@ -1,180 +1,98 @@
-let test1 = [8, 3, 1, 4, 5, 7];
-let test2 = [8, 4, 9, 1, 7, 0, 2, 10, 20, 12, 5];
-console.log(quickSort(test2));
+// exercise
+{
+  const user = {
+    name: 'Kim',
+    active: true,
+    cart: [],
+    purchases: [],
+  };
+  const book = {
+    name: 'book',
+    price: 10,
+  };
 
-// console.log(selection([5]));
+  const pipe = (...fns) => (initialData) => fns.reduce((v, fn) => fn(v), initialData);
+  const purchaseItem = pipe(
+    addToCartCurried(book),
+    addTax,
+    buy,
+    emptyCart,
+  );
+  const newUser = purchaseItem(user);
+  // console.log('result', newUser);
 
-function bubble(target) {
-  let range = target.length;
-  for (let i = 0; i < target.length - 1; i++) { // total number of passes
-    for (let j = 0; j < range - 1; j++) { // a single pass
-      console.log('ran');
-      if (target[j] > target[j + 1]) {
-        let temp = target[j];
-        target[j] = target[j + 1];
-        target[j + 1] = temp;
-      }
-    }
-    range--;
-  }
-  return target;
-}
-
-function selection(target) {
-  // edge cases
-  if (target.length < 2) {
-    return target
-  }
-
-  // main
-  let result = [...target]; // clone
-  let smallest = {};
-  let startingPoint = 1;
-  let foundNewSmallest = true;
-  for (let j = 0; j < result.length - 2; j++) { // total number of passes
-    smallest.value = result[j]; // reset smallest to the first element of current pass
-    smallest.index = j;
-    console.log('initial smallest', smallest.value);
-    for (let i = startingPoint; i < result.length; i++) { // each single pass
-      console.log('checking', result[i]);
-
-      if (result[i] < smallest.value) {
-        smallest.value = result[i];
-        smallest.index = i;
-        foundNewSmallest = true;
-        console.log('found', smallest.value);
-      }
-    }
-    if (foundNewSmallest) {
-      console.log('swapping');
-      result[smallest.index] = result[j];
-      result[j] = smallest.value;
-      foundNewSmallest = false;
-    }
-    startingPoint++;
-  }
-  return result;
-}
-
-function insertion(target) {
-  let result = [target[0]];
-  //edge cases
-  if (target.length < 2) {
-    return target;
-  }
-  //main
-  let inserted = false;
-  for (let i = 1; i < target.length; i++) { // for each item in target
-    for (let j = 0; j < i; j++) { // loop through result array
-      console.log('target element', target[i]);
-      console.log('result element', result[j]);
-      if (target[i] < result[j]) {
-        result.splice(j, 0, target[i]);
-        inserted = true;
-        console.log('new result', result);
-        break;
-      }
-    }
-    if (!inserted) { // append element to result
-      result.push(target[i]);
-      console.log('appended to result', result);
-    }
-    inserted = false;
-    console.log('next item in target');
+// add item to cart
+  function addToCart(item, user) {
+    const newUser = {...user};
+    newUser.cart = [...user.cart, item];
+    return newUser;
   }
 
-  return result;
-}
-
-function mergeSort(target) {
-  //base case
-  if (target.length === 1) {
-    return target;
+  function addToCartCurried(...args) {
+    return addToCart.bind(null, ...args);
   }
-  //recursive case
-  let half;
-  target.length % 2 === 1
-    ? half = (target.length + 1) / 2
-    : half = target.length / 2;
-  let firstHalf = target.slice(0, half);
-  let secondHalf = target.slice(half, target.length);
 
-  if (target.length >= 2) {
-    return merge(mergeSort(firstHalf), mergeSort(secondHalf));
+// add 3% tax
+  function addTax(user) {
+    const newCart = user.cart.map(
+      item => ({...item, price: item.price * 1.03}
+      )
+    );
+    return {...user, cart: newCart}
+  }
+
+// buy items
+  function buy(user) {
+    const items = [...user.cart];
+    const newPurchases = [...user.purchases, ...items];
+    return {...user, purchases: newPurchases};
+  }
+
+// empty cart
+  function emptyCart(user) {
+    return {...user, cart: []}
   }
 }
 
-function merge(a, b) {
-  console.log('merging', a, b);
-  let result = [];
-  let aIndex = 0;
-  let bIndex = 0;
+// compose
+{
+  const multiplyBy3Abs = compose(multiplyBy3, abs);
 
-  while (typeof a[aIndex] !== 'undefined' && typeof b[bIndex] !== 'undefined') {
-    if (b[bIndex] < a[aIndex]) {
-      result.push(b[bIndex]);
-      bIndex++;
-    } else {
-      result.push(a[aIndex]);
-      aIndex++;
-    }
+  function multiplyBy3(n) {
+    console.log('multiply');
+    return n * 3;
   }
-  // append the elements left after the loops
-  if (aIndex < a.length) {
-    result = [...result, ...a.slice(aIndex, a.length)]
+
+  function abs(n) {
+    console.log('abs');
+    return Math.abs(n);
   }
-  if (bIndex < b.length) {
-    result = [...result, ...b.slice(bIndex, b.length)]
+
+  function compose(...fns) {
+    return n => fns.reduceRight((v, fn) => fn(v), n);
   }
-  console.log('merge result', result);
-  return result;
+
+  // console.log(multiplyBy3Abs(-3));
 }
 
-function quickSort(target) {
-  // base case
-  if (target.length === 1) {
-    return target;
+// curry
+{
+  const arrayToString = (arr, str) => arr.join(str);
+
+  function curry(fn) {
+    return (...arg) => fn.bind(null, ...arg);
   }
 
-  // recursive case
-  let pivotIndex = target.length - 1;
-  let pivot = target[pivotIndex];
-  console.log('current pivot', pivot);
+// create a function that binds its arguments to a provided function
+  const curried = curry(arrayToString);
+// console.log(curried(['andre', 'gao'])('-'));
+//executes right away because:
+// providing the first argument turned the curried function turned into a regular
+// function that's arrayToString, when providing the second argument
+// it's to the new regular function causing the execution
 
-  let i = 0;
-  while (i < pivotIndex) {
-    console.log('comparing value', target[i]);
-    if (target[i] > pivot) {
-      let temp = target[i];
-      target[i] = target[pivotIndex - 1];
-      target[pivotIndex - 1] = pivot;
-      target[pivotIndex] = temp;
-      // sorted
-      pivotIndex--;
-      console.log('sorted', target);
-      console.log('new pivot index', pivotIndex);
-    } else {
-      i++;
-    }
-  }
-  console.log(`pivot ${pivot} sorted: ${target} | pivot index is ${pivotIndex}`);
 
-  // pivot is sorted, divide and conquer
-  if (pivotIndex > 0 && pivotIndex < (target.length - 1)) {
-    // have both left and right elements
-    // let pivotIndexSnapshot = pivotIndex;
-    console.log('Pivot index snapshot', pivotIndex);
-    let newLeft = quickSort(target.slice(0, pivotIndex));
-    let newRight = quickSort(target.slice(pivotIndex + 1, target.length));
-    target = [...newLeft, pivot, ...newRight];
-  } else if (pivotIndex === 0) {
-    // no left
-    let newRight = quickSort(target.slice(pivotIndex + 1, target.length));
-    target = [pivot, ...newRight];
-  } else {
-    // no right
-    let newLeft = quickSort(target.slice(0, pivotIndex));
-    target = [...newLeft, pivot];
-  }
-  return target;
+  const bind1 = arrayToString.bind(null, ['andre', 'gao']);
+// console.log(bind1('-'));
 }
+
