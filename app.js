@@ -96,3 +96,4 @@
 // console.log(bind1('-'));
 }
 
+
