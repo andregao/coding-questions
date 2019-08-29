@@ -180,3 +180,167 @@
   // arrayManipulation(n, queries);
   // arrayManipulation(n2, queries2);
 }
+
+{
+  function checkMagazine(magazine, note) {
+    const hashTable = {};
+    magazine.forEach(word => hashTable[word] ? hashTable[word]++ : (hashTable[word] = 1));
+    let result = 'Yes';
+    for (let i = 0; i < note.length; i++) {
+      const word = note[i];
+      if (!hashTable[word]) {
+        result = 'No';
+        break;
+      } else {
+        hashTable[word]--;
+      }
+    }
+    console.log(result);
+  }
+}
+
+{
+  function twoStrings(s1, s2) {
+    const hashTable = {};
+    let result = 'NO';
+    for (let i = 0; i < s1.length; i++) {
+      const letter = s1[i];
+      hashTable[letter] = true;
+    }
+    for (let i = 0; i < s2.length; i++) {
+      const letter = s2[i];
+      if (hashTable[letter]) {
+        result = 'YES'
+      }
+    }
+    return result;
+
+  }
+}
+
+{
+  function sherlockAndAnagrams(s) {
+    const table = {};
+    // store all substrings in a table
+    for (let i = 0; i < s.length; i++) {
+      for (let j = i; j < s.length; j++) {
+        const subS = s.slice(i, j + 1);
+        console.log('i:', i, 'j+1:', j + 1, 'sub:', subS);
+        const normalizeSubS = subS.split('').sort().join('');
+        if (table[normalizeSubS]) {
+          table[normalizeSubS]++;
+        } else {
+          table[normalizeSubS] = 1;
+        }
+      }
+    }
+    console.log(table);
+    let result = 0;
+    Object.keys(table).forEach(sub => {
+      const count = table[sub];
+      if (count > 1) {
+        // 2 -> 1, 3 -> 3, 4 -> 6
+        result = result + (count * (count - 1)) / 2;
+      }
+    });
+
+    return result;
+  }
+
+  // console.log(sherlockAndAnagrams('kkkk'));
+}
+
+{
+  function maximumToys(prices, k) {
+    let count = 0;
+    prices.sort(((a, b) => a - b))
+    for (let i = 0; i < prices.length; i++) {
+      k = k - prices[i];
+      if (k < 0) {
+        break;
+      }
+      count++;
+    }
+    return count;
+  }
+
+  // console.log(maximumToys([1, 12, 5, 111, 200, 1000, 10], 50))
+}
+
+{
+  function makeAnagram(a, b) {
+    const table = {};
+    let matchCount = 0
+    a.split('').forEach(char => table[char] = table[char] ? table[char] + 1 : 1);
+    b.split('').forEach(char => {
+      if (table[char]) {
+        table[char]--;
+        matchCount++;
+      }
+    });
+    const deleteCount = (a.length + b.length) - matchCount * 2;
+    return deleteCount;
+  }
+
+  // console.log(makeAnagram('cde', 'abc'))
+}
+{
+  function whatFlavors(cost, money) {
+    let table = {};
+    let resultArray;
+    for (let i = 0; i < cost.length; i++) {
+      const price = cost[i];
+      if (table[money - price]) {
+        resultArray = [table[money - price], i + 1];
+        break;
+      }
+      table[price] = i + 1;
+    }
+    resultArray.sort((a, b) => a - b);
+    console.log(resultArray.join(' '))
+
+  }
+
+  // whatFlavors([1, 4, 5, 3, 2], 4)
+}
+{
+  function oddNumbers(l, r) {
+    let i;
+    if (l % 2 === 1) {
+      i = l;
+    } else {
+      i = l + 1;
+    }
+    while (i <= r) {
+      console.log(i);
+      i = i + 2;
+    }
+
+  }
+
+  // oddNumbers(1, 51)
+}
+
+{
+  function reverseAll(str) {
+    const resultArray = [];
+    for (let i = 0; i < str.length; i++) {
+      resultArray[str.length - 1 - i] = str[i];
+    }
+    return resultArray.join('');
+  }
+
+  // reverseAll('Foo bar baz quux');
+}
+
+{
+  function reverseWords(str) {
+    const words = str.split(' ');
+    words.forEach((word, index) => {
+      words[index] = reverseAll(word);
+    });
+    return words.join(' ')
+  }
+
+  reverseWords('Foo bar baz quux')
+}
