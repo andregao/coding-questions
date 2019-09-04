@@ -17,7 +17,7 @@
     return total;
   }
 
-// repeatedString('aba', 10);
+  // repeatedString('aba', 10);
 }
 
 {
@@ -32,7 +32,6 @@
         i === 0 && j === 0 && (maxTotal = total);
         total > maxTotal && (maxTotal = total);
       }
-
     }
     console.log(maxTotal);
     return maxTotal;
@@ -46,7 +45,7 @@
     [0, 0, 0, 2, 0, 0],
     [0, 0, 1, 2, 4, 0]
   ];
-// hourglassSum(hourglassSumArr);
+  // hourglassSum(hourglassSumArr);
 }
 
 {
@@ -58,18 +57,17 @@
         newIndex = a.length + newIndex;
       }
       result[newIndex] = item;
-    })
+    });
     console.log(result);
     return result;
   }
 
   const rotLeftA = [1, 2, 3, 4, 5];
   const rotLeftD = 5;
-// rotLeft(rotLeftA, rotLeftD);
+  // rotLeft(rotLeftA, rotLeftD);
 }
 
 {
-
   function minimumBribes(q) {
     let chaos = false; // flag in case of over 2 moves
     const moveCountPerNumber = [];
@@ -102,7 +100,10 @@
       }
     }
     // console.log(moveCountPerNumber);
-    const result = moveCountPerNumber.reduce((acc, current) => current + acc, 0);
+    const result = moveCountPerNumber.reduce(
+      (acc, current) => current + acc,
+      0
+    );
     chaos ? console.log('Too chaotic') : console.log(result);
   }
 
@@ -118,7 +119,6 @@
     result.forEach((item, index) => swap(item, index + 1));
 
     function swap(current, target) {
-
       while (current !== target) {
         const temp = result[current - 1];
         result[current - 1] = current;
@@ -163,20 +163,10 @@
     return highest;
   }
 
-
   const n = 10;
   const n2 = 5;
-  const queries = [
-    [2, 6, 8],
-    [3, 5, 7],
-    [1, 8, 1],
-    [5, 9, 15],
-  ];
-  const queries2 = [
-    [1, 2, 100],
-    [2, 5, 100],
-    [3, 4, 100],
-  ];
+  const queries = [[2, 6, 8], [3, 5, 7], [1, 8, 1], [5, 9, 15]];
+  const queries2 = [[1, 2, 100], [2, 5, 100], [3, 4, 100]];
   // arrayManipulation(n, queries);
   // arrayManipulation(n2, queries2);
 }
@@ -184,7 +174,9 @@
 {
   function checkMagazine(magazine, note) {
     const hashTable = {};
-    magazine.forEach(word => hashTable[word] ? hashTable[word]++ : (hashTable[word] = 1));
+    magazine.forEach(word =>
+      hashTable[word] ? hashTable[word]++ : (hashTable[word] = 1)
+    );
     let result = 'Yes';
     for (let i = 0; i < note.length; i++) {
       const word = note[i];
@@ -210,11 +202,10 @@
     for (let i = 0; i < s2.length; i++) {
       const letter = s2[i];
       if (hashTable[letter]) {
-        result = 'YES'
+        result = 'YES';
       }
     }
     return result;
-
   }
 }
 
@@ -226,7 +217,10 @@
       for (let j = i; j < s.length; j++) {
         const subS = s.slice(i, j + 1);
         console.log('i:', i, 'j+1:', j + 1, 'sub:', subS);
-        const normalizeSubS = subS.split('').sort().join('');
+        const normalizeSubS = subS
+          .split('')
+          .sort()
+          .join('');
         if (table[normalizeSubS]) {
           table[normalizeSubS]++;
         } else {
@@ -253,7 +247,7 @@
 {
   function maximumToys(prices, k) {
     let count = 0;
-    prices.sort(((a, b) => a - b))
+    prices.sort((a, b) => a - b);
     for (let i = 0; i < prices.length; i++) {
       k = k - prices[i];
       if (k < 0) {
@@ -270,15 +264,17 @@
 {
   function makeAnagram(a, b) {
     const table = {};
-    let matchCount = 0
-    a.split('').forEach(char => table[char] = table[char] ? table[char] + 1 : 1);
+    let matchCount = 0;
+    a.split('').forEach(
+      char => (table[char] = table[char] ? table[char] + 1 : 1)
+    );
     b.split('').forEach(char => {
       if (table[char]) {
         table[char]--;
         matchCount++;
       }
     });
-    const deleteCount = (a.length + b.length) - matchCount * 2;
+    const deleteCount = a.length + b.length - matchCount * 2;
     return deleteCount;
   }
 
@@ -297,8 +293,7 @@
       table[price] = i + 1;
     }
     resultArray.sort((a, b) => a - b);
-    console.log(resultArray.join(' '))
-
+    console.log(resultArray.join(' '));
   }
 
   // whatFlavors([1, 4, 5, 3, 2], 4)
@@ -315,7 +310,6 @@
       console.log(i);
       i = i + 2;
     }
-
   }
 
   // oddNumbers(1, 51)
@@ -339,8 +333,10 @@
     words.forEach((word, index) => {
       words[index] = reverseAll(word);
     });
-    return words.join(' ')
+    return words.join(' ');
   }
 
-  reverseWords('Foo bar baz quux')
+  // reverseWords('Foo bar baz quux')
 }
+
+
