@@ -277,7 +277,8 @@
   // console.log(quickSort([7, 6, 4, 9, 3, 0, 10, 8, 5, 1, 2]));
 }
 
-{ //radix sort
+{
+  //radix sort
   const getDigit = (num, index) => {
     const s = String(num);
     const sIndex = s.length - 1 - index;
@@ -290,7 +291,7 @@
   const getDigitMath = (num, index) => {
     num = Math.abs(num);
     const temp = 10 ** (index + 1);
-    const temp2 = 10 ** (index);
+    const temp2 = 10 ** index;
     return Math.floor((num % temp) / temp2);
   };
 
@@ -308,12 +309,12 @@
         break;
       }
     }
-    return i
+    return i;
   };
 
   const digitCount2 = num => {
     if (num === 0) {
-      return 1
+      return 1;
     }
     return Math.floor(Math.log10(num)) + 1;
   };
@@ -332,11 +333,12 @@
       let buckets = [];
       arr.forEach(item => {
         const digit = getDigit(item, i);
-        (buckets[digit] === undefined) && (buckets[digit] = []);
+        buckets[digit] === undefined && (buckets[digit] = []);
         buckets[digit].push(item);
       });
       let result = [];
-      buckets.forEach(item => { // forEach method skips empty items
+      buckets.forEach(item => {
+        // forEach method skips empty items
         result = result.concat(item);
       });
       arr = result;
@@ -347,7 +349,8 @@
   // console.log(radixSort([71, 4102, 9, 14, 505, 1842, 92, 6]))
 }
 
-{ // linked lists
+{
+  // linked lists
   class Node {
     constructor(value) {
       this.val = value;
@@ -380,12 +383,12 @@
       for (let i = 0; i < count - 1; i++) {
         currentNode = currentNode.next;
       }
-      return currentNode
+      return currentNode;
     }
 
     pop() {
       if (!this.length) {
-        return undefined
+        return undefined;
       }
       this.tail = this.traverse(this.length - 1); // 2nd to last, new tail
       let popped;
@@ -400,7 +403,7 @@
 
     shift() {
       if (!this.length) {
-        return undefined
+        return undefined;
       }
       const shifted = this.head;
       this.head = this.head.next;
@@ -414,7 +417,7 @@
     unshift(value) {
       const newNode = new Node(value);
       if (!this.length) {
-        this.head = this.tail = newNode
+        this.head = this.tail = newNode;
       } else {
         newNode.next = this.head;
         this.head = newNode;
@@ -517,6 +520,32 @@
       this.length++;
       return this;
     }
+
+    get(index) {
+      if (index < 0 || index >= this.length || this.length === 0) {
+        return undefined;
+      }
+
+      const halfPoint = Math.floor(this.length / 2);
+      let pointer;
+      let pointerIndex;
+      if (index < halfPoint) {
+        pointer = this.head;
+        pointerIndex = 0;
+        while (pointerIndex !== index) {
+          pointer = pointer.next;
+          pointerIndex++;
+        }
+      } else {
+        pointer = this.tail;
+        pointerIndex = this.length - 1;
+        while (pointerIndex !== index) {
+          pointer = pointer.prev;
+          pointerIndex--;
+        }
+      }
+      return pointer.value;
+    }
   }
 
   const list = new DoublyLinkedList();
@@ -525,5 +554,185 @@
   list.push(3);
   // list.pop();
   list.shift();
-  console.log(list);
+  // console.log(list);
+}
+
+{
+  // Binary Search Tree
+  class Node {
+    constructor(value) {
+      this.value = value;
+      this.left = null;
+      this.right = null;
+    }
+  }
+
+  class BST {
+    constructor() {
+      this.root = null;
+    }
+
+    insert(value) {
+      const node = new Node(value);
+      if (!this.root) {
+        this.root = node;
+        return this;
+      }
+      let pointer = this.root;
+      /*while (
+        (node.value > pointer.value && pointer.right !== null) ||
+        (node.value < pointer.value && pointer.left !== null)
+        ) {
+        pointer = this.traverseOne(node.value, pointer);
+      }
+      if (node.value > pointer.value) {
+        pointer.right = node;
+      } else {
+        pointer.left = node;
+      }*/
+      while (true) {
+        if (node.value === pointer.value) {
+          return undefined;
+        }
+        if (node.value < pointer.value) {
+          if (pointer.left === null) {
+            pointer.left = node;
+            return this;
+          } else {
+            pointer = pointer.left;
+          }
+        } else {
+          if (pointer.right === null) {
+            pointer.right = node;
+            return this;
+          } else {
+            pointer = pointer.right;
+          }
+        }
+      }
+    }
+
+    traverseOne(value, pointer) {
+      console.log(value, pointer.value);
+      if (value > pointer.value) {
+        pointer = pointer.right;
+      } else {
+        pointer = pointer.left;
+      }
+      return pointer;
+    }
+
+    contains(value) {
+      if (!this.root) {
+        return false
+      }
+      let pointer = this.root;
+      /* while (true) {
+        if (value === pointer.value) {
+          return true;
+        }
+        if (value > pointer.value) {
+          if (pointer.right) {
+            pointer = pointer.right
+          } else {
+            return false;
+          }
+        } else {
+          if (pointer.left) {
+            pointer = pointer.left
+          } else {
+            return false;
+          }
+        }
+      } */
+      while (pointer) {
+        if (value === pointer.value) {
+          return true;
+        }
+        if (value < pointer.value) {
+          pointer = pointer.left;
+        } else {
+          pointer = pointer.right;
+        }
+      }
+      return false;
+    }
+
+    bfs() {
+      if (!this.root) return [];
+      const result = [];
+      const queue = [];
+      queue.push(this.root);
+      while (queue.length > 0) {
+        result.push(queue[0].value);
+        queue[0].left && queue.push(queue[0].left);
+        queue[0].right && queue.push(queue[0].right);
+        queue.shift();
+      }
+      return result;
+    }
+
+    dfsPreOder() {
+      let pointer = this.root;
+      const result = [];
+      traverse(pointer);
+
+      function traverse(node) {
+        result.push(node.value);
+        node.left && traverse(node.left);
+        node.right && traverse(node.right);
+      }
+
+      return result;
+    }
+
+    dfsPostOrder() {
+      let pointer = this.root;
+      const result = [];
+      traverse(pointer);
+
+      function traverse(node) {
+        node.left && traverse(node.left);
+        node.right && traverse(node.right);
+        result.push(node.value);
+      }
+
+      return result;
+    }
+    dfsInOrder() {
+      let pointer = this.root;
+      const result = [];
+      traverse(pointer);
+
+      function traverse(node) {
+        node.left && traverse(node.left);
+        result.push(node.value);
+        node.right && traverse(node.right);
+      }
+
+      return result;
+    }
+  }
+
+  const bst = new BST();
+  bst.insert(8);
+  bst.insert(4);
+  bst.insert(2);
+  bst.insert(3);
+  bst.insert(6);
+  bst.insert(5);
+  bst.insert(7);
+  bst.insert(15);
+  bst.insert(11);
+  bst.insert(20);
+  bst.insert(0);
+  //           8
+  //     4             15
+  //  2      6     11       20
+  //0  3    5   7
+  // console.log(bst.dfsPostOrder());
+}
+
+{// heaps
+  
 }
