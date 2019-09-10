@@ -624,7 +624,7 @@
 
     contains(value) {
       if (!this.root) {
-        return false
+        return false;
       }
       let pointer = this.root;
       /* while (true) {
@@ -699,6 +699,7 @@
 
       return result;
     }
+
     dfsInOrder() {
       let pointer = this.root;
       const result = [];
@@ -733,6 +734,92 @@
   // console.log(bst.dfsPostOrder());
 }
 
-{// heaps
-  
+{
+  // heaps
+  class MaxBinaryHeap {
+    constructor() {
+      this.heap = [];
+    }
+
+    insert(value) {
+      this.heap.push(value);
+      this.heap.length > 1 && this.bubbleUp(this.heap.length - 1);
+    }
+
+    bubbleUp(targetIndex) {
+      if (targetIndex === 0) {
+        return;
+      }
+      const target = this.heap[targetIndex];
+      const parentIndex = Math.floor((targetIndex - 1) / 2);
+      const parent = this.heap[parentIndex];
+      if (target > parent) {
+        // this.heap.splice(targetIndex, 1);
+        // this.heap.splice(parentIndex, 0, target);
+        this.heap[parentIndex] = target;
+        this.heap[targetIndex] = parent;
+        this.bubbleUp(parentIndex);
+      }
+    }
+
+    extractMax() {
+      if (this.heap.length === 0) {
+        return null;
+      }
+      const root = this.heap[0];
+      this.heap[0] = this.heap.pop();
+      console.log('before bubble down', this.heap);
+      this.bubbleDown(0);
+      return root;
+    }
+
+    bubbleDown(targetIndex) {
+      const leftIndex = targetIndex * 2 + 1;
+      const rightIndex = targetIndex * 2 + 2;
+      const target = this.heap[targetIndex];
+      const left = this.heap[leftIndex];
+      const right = this.heap[rightIndex];
+      let complete = false;
+      (left === undefined && right === undefined) && (complete = true);
+      (left === undefined && target > right) && (complete = true);
+      (right === undefined && target > left) && (complete = true);
+      (target > left && target > right) && (complete = true);
+      if (complete) return;
+
+      if (left > target || right > target) {
+        if ((left !== undefined && right !== undefined) && (left > right)) {
+          // swap with left child
+          this.heap[leftIndex] = target;
+          this.heap[targetIndex] = left;
+          this.bubbleDown(leftIndex);
+        } else if ((left !== undefined && right !== undefined) && (left < right)) {
+          // swap with right child
+          this.heap[rightIndex] = target;
+          this.heap[targetIndex] = right;
+          this.bubbleDown(rightIndex);
+        } else if (left === undefined) {
+          // swap with right
+          this.heap[rightIndex] = target;
+          this.heap[targetIndex] = right;
+          this.bubbleDown(rightIndex);
+        } else {
+          // swap with left
+          this.heap[leftIndex] = target;
+          this.heap[targetIndex] = left;
+          this.bubbleDown(leftIndex);
+        }
+      }
+    }
+  }
+
+  const mbh = new MaxBinaryHeap();
+  mbh.insert(50);
+  mbh.insert(20);
+  mbh.insert(10);
+  mbh.insert(30);
+  mbh.insert(60);
+  // console.log(mbh.extractMax());
+  // console.log(mbh.extractMax());
+  // console.log(mbh.extractMax());
+  // console.log(mbh.heap);
 }
