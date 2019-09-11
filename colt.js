@@ -146,7 +146,7 @@
           swapped = true;
         }
       }
-      console.log('single pass');
+      console.log("single pass");
       if (!swapped) {
         return arr; // short circuit
       }
@@ -169,7 +169,7 @@
         }
       }
       if (newMin) {
-        console.log('swapping', arr[i], arr[minIndex]);
+        console.log("swapping", arr[i], arr[minIndex]);
         [arr[minIndex], arr[i]] = [arr[i], arr[minIndex]];
       }
     }
@@ -184,9 +184,9 @@
     for (let i = 1; i < arr.length; i++) {
       for (let j = i; j > 0 && arr[j] < arr[j - 1]; j--) {
         console.log(`index = ${i}`, arr[j], arr[j - 1]);
-        console.log('before', arr);
+        console.log("before", arr);
         [arr[j - 1], arr[j]] = [arr[j], arr[j - 1]];
-        console.log('after', arr);
+        console.log("after", arr);
       }
     }
     return arr;
@@ -434,10 +434,10 @@
   }
 
   const list = new SinglyLinkedList();
-  list.push('andre');
-  list.push('gao');
+  list.push("andre");
+  list.push("gao");
   // console.log(list.traverse(2))
-  list.push('joanna');
+  list.push("joanna");
   // list.push('xu');
   // console.log(list);
   // console.log(list.get(0));
@@ -768,7 +768,7 @@
       }
       const root = this.heap[0];
       this.heap[0] = this.heap.pop();
-      console.log('before bubble down', this.heap);
+      console.log("before bubble down", this.heap);
       this.bubbleDown(0);
       return root;
     }
@@ -780,19 +780,19 @@
       const left = this.heap[leftIndex];
       const right = this.heap[rightIndex];
       let complete = false;
-      (left === undefined && right === undefined) && (complete = true);
-      (left === undefined && target > right) && (complete = true);
-      (right === undefined && target > left) && (complete = true);
-      (target > left && target > right) && (complete = true);
+      left === undefined && right === undefined && (complete = true);
+      left === undefined && target > right && (complete = true);
+      right === undefined && target > left && (complete = true);
+      target > left && target > right && (complete = true);
       if (complete) return;
 
       if (left > target || right > target) {
-        if ((left !== undefined && right !== undefined) && (left > right)) {
+        if (left !== undefined && right !== undefined && left > right) {
           // swap with left child
           this.heap[leftIndex] = target;
           this.heap[targetIndex] = left;
           this.bubbleDown(leftIndex);
-        } else if ((left !== undefined && right !== undefined) && (left < right)) {
+        } else if (left !== undefined && right !== undefined && left < right) {
           // swap with right child
           this.heap[rightIndex] = target;
           this.heap[targetIndex] = right;
@@ -822,4 +822,195 @@
   // console.log(mbh.extractMax());
   // console.log(mbh.extractMax());
   // console.log(mbh.heap);
+}
+
+{
+  //hash table
+  class HashTable {
+    constructor(size = 53) {
+      this.hashMap = new Array(size);
+    }
+
+    _hash(value) {
+      let result = 0;
+      const PRIME = 31;
+      for (let i = 0; i < Math.min(value.length, 100); i++) {
+        const charCode = value[i].charCodeAt(0) - 96;
+        result = (result * PRIME + charCode) % this.hashMap.length;
+      }
+      return result;
+    }
+
+    set(key, value) {
+      const index = this._hash(key);
+      if (this.hashMap[index] === undefined) {
+        this.hashMap[index] = [];
+      }
+      // if key exist, replace value
+      let existingData = this.hashMap[index].find(item => item[0] === key);
+      if (existingData) {
+        return (existingData[1] = value);
+      }
+      this.hashMap[index].push([key, value]);
+    }
+
+    get(key) {
+      const index = this._hash(key);
+      let result;
+      if (this.hashMap[index]) {
+        result = this.hashMap[index].find(item => item[0] === key);
+      }
+      return result ? result[1] : result;
+    }
+
+    keys() {
+      const result = [];
+      this.hashMap.forEach(items => {
+        items.forEach(item => result.push(item[0]));
+      });
+      return result;
+    }
+
+    values() {
+      //unique values
+      const result = {};
+      this.hashMap.forEach(items => {
+        items.forEach(item => (result[item[1]] = true));
+      });
+      return Object.keys(result);
+    }
+  }
+
+  const ht = new HashTable(5);
+  ht.set("man", "andre");
+  ht.set("man", "gao");
+  ht.set("women", "joanna");
+  ht.set("child", "ellie");
+  ht.set("baby", "ellie");
+  // console.log(ht.get('man'));
+  // console.log(ht.get('horse'));
+  // console.log(ht.keys());
+  // console.log(ht.values());
+}
+
+{
+  //graph
+  class Graph {
+    constructor() {
+      this.adjacencyList = {
+        a: ["b", "c"],
+        b: ["a", "d"],
+        c: ["a", "e"],
+        d: ["b", "e", "f"],
+        e: ["c", "d", "f"],
+        f: ["d", "e"]
+      };
+    }
+
+    addVertex(name) {
+      if (!this.adjacencyList[name]) {
+        this.adjacencyList[name] = [];
+      } else {
+        return null;
+      }
+    }
+
+    addEdge(a, b) {
+      !this.adjacencyList[a] && (this.adjacencyList[a] = []);
+      !this.adjacencyList[b] && (this.adjacencyList[b] = []);
+      this.adjacencyList[a].push(b);
+      this.adjacencyList[b].push(a);
+    }
+
+    removeEdge(a, b) {
+      this.adjacencyList[a] = this.adjacencyList[a].filter(v => v !== b);
+      this.adjacencyList[b] = this.adjacencyList[b].filter(v => v !== a);
+    }
+
+    removeVertex(name) {
+      this.adjacencyList[name].forEach(v => {
+        this.removeEdge(name, v);
+      });
+      this.adjacencyList = Object.keys(this.adjacencyList).reduce(
+        (acc, curr) => {
+          if (curr !== name) {
+            acc[curr] = this.adjacencyList[curr];
+          }
+          return acc;
+        },
+        {}
+      );
+    }
+
+    dfsRecursive(name) {
+      const result = [name];
+      const visited = { [name]: true };
+
+      const helper = name => {
+        this.adjacencyList[name].forEach(v => {
+          if (!visited[v]) {
+            result.push(v);
+            visited[v] = true;
+            helper(v);
+          }
+        });
+      };
+
+      helper(name);
+      return result;
+    }
+
+    dfsIterative(name) {
+      const stack = [name];
+      const result = [];
+      const visited = {};
+      while (stack.length) {
+        const current = stack.pop();
+        if (!visited[current]) {
+          result.push(current);
+          visited[current] = true;
+          this.adjacencyList[current].forEach(v => stack.push(v));
+        }
+      }
+      return result;
+    }
+
+    bfsRecursive(name) {
+      const result = [name];
+      const visited = { [name]: true };
+
+      const helper = v => {
+        const arr = [];
+        this.adjacencyList[v].forEach(n => {
+          if (!visited[n]) {
+            result.push(n);
+            arr.push(n);
+            visited[n] = true;
+          }
+        });
+        arr.forEach(item => helper(item));
+      };
+      helper(name);
+      return result;
+    }
+
+    bfsIterative(name) {
+      const result = [];
+      const queue = [name];
+      const visited = {};
+      while (queue.length) {
+        const current = queue.shift();
+        if (!visited[current]) {
+          result.push(current);
+          visited[current] = true;
+          this.adjacencyList[current].forEach(v => queue.push(v));
+        }
+      }
+      return result;
+    }
+  }
+
+  const g = new Graph();
+  // g.removeVertex('a');
+  console.log(g.bfsRecursive("a"));
 }
