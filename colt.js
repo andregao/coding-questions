@@ -146,7 +146,7 @@
           swapped = true;
         }
       }
-      console.log("single pass");
+      console.log('single pass');
       if (!swapped) {
         return arr; // short circuit
       }
@@ -169,7 +169,7 @@
         }
       }
       if (newMin) {
-        console.log("swapping", arr[i], arr[minIndex]);
+        console.log('swapping', arr[i], arr[minIndex]);
         [arr[minIndex], arr[i]] = [arr[i], arr[minIndex]];
       }
     }
@@ -184,9 +184,9 @@
     for (let i = 1; i < arr.length; i++) {
       for (let j = i; j > 0 && arr[j] < arr[j - 1]; j--) {
         console.log(`index = ${i}`, arr[j], arr[j - 1]);
-        console.log("before", arr);
+        console.log('before', arr);
         [arr[j - 1], arr[j]] = [arr[j], arr[j - 1]];
-        console.log("after", arr);
+        console.log('after', arr);
       }
     }
     return arr;
@@ -434,10 +434,10 @@
   }
 
   const list = new SinglyLinkedList();
-  list.push("andre");
-  list.push("gao");
+  list.push('andre');
+  list.push('gao');
   // console.log(list.traverse(2))
-  list.push("joanna");
+  list.push('joanna');
   // list.push('xu');
   // console.log(list);
   // console.log(list.get(0));
@@ -754,8 +754,6 @@
       const parentIndex = Math.floor((targetIndex - 1) / 2);
       const parent = this.heap[parentIndex];
       if (target > parent) {
-        // this.heap.splice(targetIndex, 1);
-        // this.heap.splice(parentIndex, 0, target);
         this.heap[parentIndex] = target;
         this.heap[targetIndex] = parent;
         this.bubbleUp(parentIndex);
@@ -768,7 +766,7 @@
       }
       const root = this.heap[0];
       this.heap[0] = this.heap.pop();
-      console.log("before bubble down", this.heap);
+      console.log('before bubble down', this.heap);
       this.bubbleDown(0);
       return root;
     }
@@ -882,11 +880,11 @@
   }
 
   const ht = new HashTable(5);
-  ht.set("man", "andre");
-  ht.set("man", "gao");
-  ht.set("women", "joanna");
-  ht.set("child", "ellie");
-  ht.set("baby", "ellie");
+  ht.set('man', 'andre');
+  ht.set('man', 'gao');
+  ht.set('women', 'joanna');
+  ht.set('child', 'ellie');
+  ht.set('baby', 'ellie');
   // console.log(ht.get('man'));
   // console.log(ht.get('horse'));
   // console.log(ht.keys());
@@ -898,12 +896,12 @@
   class Graph {
     constructor() {
       this.adjacencyList = {
-        a: ["b", "c"],
-        b: ["a", "d"],
-        c: ["a", "e"],
-        d: ["b", "e", "f"],
-        e: ["c", "d", "f"],
-        f: ["d", "e"]
+        a: ['b', 'c'],
+        b: ['a', 'd'],
+        c: ['a', 'e'],
+        d: ['b', 'e', 'f'],
+        e: ['c', 'd', 'f'],
+        f: ['d', 'e']
       };
     }
 
@@ -1012,5 +1010,171 @@
 
   const g = new Graph();
   // g.removeVertex('a');
-  console.log(g.bfsRecursive("a"));
+  // console.log(g.bfsRecursive('a'));
+}
+
+{
+  //weighted graph
+  class WeightedGraph {
+    constructor() {
+      this.adjacencyList = {};
+    }
+
+    addVertex(value) {
+      if (!this.adjacencyList[value]) {
+        this.adjacencyList[value] = [];
+      }
+    }
+
+    addEdge(a, b, weight) {
+      this.adjacencyList[a].push({ name: b, weight });
+      this.adjacencyList[b].push({ name: a, weight });
+    }
+
+    dijkstra(start, end) {
+      const pq = new MinBinaryHeap();
+      pq.insert(start, 0);
+      const distances = { [start]: 0 };
+      const previous = { [start]: null };
+      const visited = {};
+      const result = [];
+      while (pq.heap.length) {
+        const current = pq.extractMin();
+        console.log('current:', current);
+        if (current.name === end) {
+          let pointer = end;
+          while (pointer !== null) {
+            result.push(pointer);
+            pointer = previous[pointer];
+          }
+          result.reverse();
+          break;
+        }
+        this.adjacencyList[current.name].forEach(neighbor => {
+          console.log('neighbor:', neighbor);
+          if (!visited[neighbor.name]) {
+            const distance = distances[current.name] + neighbor.weight;
+            if (distance < (distances[neighbor.name] || Infinity)) {
+              pq.insert(neighbor.name, distance);
+              distances[neighbor.name] = distance;
+              previous[neighbor.name] = current.name;
+              console.log('distances', distances, '| previous', previous);
+            }
+          }
+        });
+        visited[current.name] = true;
+      }
+      console.log('final', distances, previous, visited);
+      return result;
+    }
+  }
+
+  class MinBinaryHeap {
+    constructor() {
+      this.heap = [];
+    }
+
+    insert(name, weight) {
+      this.heap.push({ name, weight });
+      this.heap.length > 1 && this.bubbleUp(this.heap.length - 1);
+    }
+
+    bubbleUp(targetIndex) {
+      if (targetIndex === 0) {
+        return;
+      }
+      const target = this.heap[targetIndex];
+      const parentIndex = Math.floor((targetIndex - 1) / 2);
+      const parent = this.heap[parentIndex];
+      if (target.weight < parent.weight) {
+        this.heap[parentIndex] = target;
+        this.heap[targetIndex] = parent;
+        this.bubbleUp(parentIndex);
+      }
+    }
+
+    extractMin() {
+      if (this.heap.length === 0) {
+        return null;
+      }
+      const root = this.heap[0];
+      this.heap[0] = this.heap.pop();
+      console.log('before bubble down', this.heap);
+      this.bubbleDown(0);
+      return root;
+    }
+
+    bubbleDown(targetIndex) {
+      const leftIndex = targetIndex * 2 + 1;
+      const rightIndex = targetIndex * 2 + 2;
+      const target = this.heap[targetIndex];
+      const left = this.heap[leftIndex];
+      const right = this.heap[rightIndex];
+      let complete = false;
+      left === undefined && right === undefined && (complete = true);
+      left === undefined &&
+        right !== undefined &&
+        target.weight < right.weight &&
+        (complete = true);
+      right === undefined &&
+        left !== undefined &&
+        target.weight < left.weight &&
+        (complete = true);
+      left !== undefined &&
+        target.weight < left.weight &&
+        right !== undefined &&
+        target.weight < right.weight &&
+        (complete = true);
+      if (complete) return;
+
+      if (left.weight < target.weight || right.weight < target.weight) {
+        if (
+          left !== undefined &&
+          right !== undefined &&
+          left.weight < right.weight
+        ) {
+          // swap with left child
+          this.heap[leftIndex] = target;
+          this.heap[targetIndex] = left;
+          this.bubbleDown(leftIndex);
+        } else if (left !== undefined && right !== undefined && left > right) {
+          // swap with right child
+          this.heap[rightIndex] = target;
+          this.heap[targetIndex] = right;
+          this.bubbleDown(rightIndex);
+        } else if (left === undefined) {
+          // swap with right
+          this.heap[rightIndex] = target;
+          this.heap[targetIndex] = right;
+          this.bubbleDown(rightIndex);
+        } else {
+          // swap with left
+          this.heap[leftIndex] = target;
+          this.heap[targetIndex] = left;
+          this.bubbleDown(leftIndex);
+        }
+      }
+    }
+  }
+
+  const wg = new WeightedGraph();
+  wg.addVertex('A');
+  wg.addVertex('B');
+  wg.addVertex('C');
+  wg.addVertex('D');
+  wg.addVertex('E');
+  wg.addVertex('F');
+
+  wg.addEdge('A', 'B', 4);
+  wg.addEdge('A', 'C', 2);
+  // wg.addEdge('B', 'E', 1);
+  wg.addEdge('B', 'E', 3);
+  wg.addEdge('C', 'D', 2);
+  wg.addEdge('C', 'F', 4);
+  wg.addEdge('D', 'E', 3);
+  wg.addEdge('D', 'F', 1);
+  wg.addEdge('E', 'F', 1);
+  // wg.addEdge('E', 'F', 2);
+
+  // console.log(wg.dijkstra('A', 'E'));
 }
