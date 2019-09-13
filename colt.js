@@ -1178,3 +1178,36 @@
 
   // console.log(wg.dijkstra('A', 'E'));
 }
+
+{
+  //Dynamic Programming
+  const fibonacci = num => {
+    const calculated = [null, 1, 1];
+    const helper = n => {
+      if (calculated[n]) return calculated[n];
+      calculated[n] = helper(n - 1) + helper(n - 2);
+      return calculated[n];
+    };
+    return helper(num);
+  };
+
+  const fibonacciSingleFunction = (num, calculated = []) => {
+    if (calculated[num]) return calculated[num];
+    if (num <= 2) return 1;
+    calculated[num] =
+      fibonacciSingleFunction(num - 1, calculated) +
+      fibonacciSingleFunction(num - 2, calculated);
+    return calculated[num];
+  };
+
+  const fibonacciOptimized = n => {
+    const calculated = [null, 1, 1];
+    for (let i = 3; i <= n; i++) {
+      calculated[i] = calculated[i - 2] + calculated[i - 1];
+    }
+    return calculated[n];
+  };
+
+  // console.log(fibonacci(6));
+  console.log(fibonacciOptimized(100));
+}
