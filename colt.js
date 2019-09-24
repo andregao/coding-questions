@@ -144,9 +144,10 @@
         if (arr[j] > arr[j + 1]) {
           [arr[j + 1], arr[j]] = [arr[j], arr[j + 1]];
           swapped = true;
+          console.log(arr);
+
         }
       }
-      console.log('single pass');
       if (!swapped) {
         return arr; // short circuit
       }
@@ -154,7 +155,7 @@
     return arr;
   };
 
-  // console.log(bubbleSort([2, 8, 4, 10, 11, 13, 12])); // optimized for almost sorted
+  console.log(bubbleSort([5, 9, 3, 1, 0, 6, 10, 8, 7])); // optimized for almost sorted
 }
 
 {
@@ -1209,5 +1210,5 @@
   };
 
   // console.log(fibonacci(6));
-  console.log(fibonacciOptimized(100));
+  // console.log(fibonacciOptimized(100));
 }
