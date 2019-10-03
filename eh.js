@@ -118,17 +118,103 @@
       return arr;
     }
     const pivot = arr[arr.length - 1];
-    const left = [], right = [];
+    const left = [],
+      right = [];
     for (let i = 0; i < arr.length - 1; i++) {
       const current = arr[i];
       if (current < pivot) {
-        left.push(current)
+        left.push(current);
       } else {
-        right.push(current)
+        right.push(current);
       }
     }
     return [...quickSort(left), pivot, ...quickSort(right)];
   };
   const target = [5, 9, 3, 1, 0, 6, 10, 8, 7];
   // console.log(quickSort(target));
+}
+
+{
+  // knapsack
+  const rope = { value: 1500, weight: 1 };
+  const tent = { value: 3000, weight: 4 };
+  const food = { value: 2000, weight: 3 };
+  const knife = { value: 4000, weight: 1 };
+  const book = { value: 1000, weight: 1 };
+  const candle = { value: 6000, weight: 1 };
+
+  const allItems = [rope, tent, food, knife, book, candle];
+
+  const knapsackRecursive = (items, weight) => {
+    // initialize
+    const memoGrid = [];
+    items.forEach(i => memoGrid.push([]));
+
+    // helper function to access grid
+    const helper = (itemIndex, capacity) => {
+      // base cases
+      if (itemIndex >= items.length || capacity <= 0) {
+        return 0;
+      }
+      if (memoGrid[itemIndex][capacity] !== undefined) {
+        // console.log('HIT', itemIndex, capacity, memoGrid[itemIndex][capacity]);
+        return memoGrid[itemIndex][capacity];
+      }
+
+      // recursive cases
+      const { weight, value } = items[itemIndex];
+      // skip to next item if current item weights more than capacity allows
+      if (weight > capacity) {
+        return helper(itemIndex + 1, capacity);
+      }
+      // if putting the current item in
+      const value1 = value + helper(itemIndex + 1, capacity - weight);
+      // if not putting it in
+      const value2 = helper(itemIndex + 1, capacity);
+      // console.log(weight, value, capacity);
+      // console.log('v1, v2', value1, value2);
+      const result = Math.max(value1, value2);
+      memoGrid[itemIndex][capacity] = result;
+      return result;
+    };
+
+    const result = helper(0, weight);
+    console.log(memoGrid);
+    return result;
+  };
+
+  const knapsackIterative = (items, totalWeight) => {
+    // initialize grid
+    const grid = [];
+    for (let i = 0; i <= items.length; i++) {
+      grid.push([0]);
+    }
+    for (let i = 0; i <= totalWeight; i++) {
+      grid[0][i] = 0;
+    }
+    // console.log(grid);
+
+    items.forEach((item, index) => {
+      const itemNum = index + 1;
+      const { value, weight } = item;
+      for (let capacity = 1; capacity <= totalWeight; capacity++) {
+        // console.log('current capacity', capacity);
+        if (weight > capacity) {
+          grid[itemNum][capacity] = grid[itemNum - 1][capacity];
+          // console.log('overweight item:', itemNum);
+          // console.log(grid);
+        } else {
+          const value1 = value + grid[itemNum - 1][capacity - weight];
+          const value2 = grid[itemNum - 1][capacity];
+          // console.log('v1, v2', value1, value2);
+          grid[itemNum][capacity] = value1 > value2 ? value1 : value2;
+          // console.log(grid);
+        }
+      }
+    });
+    console.log(grid);
+    return grid[items.length][totalWeight];
+  };
+  console.log(knapsackRecursive(allItems, 4));
+  console.log(knapsackIterative(allItems, 4));
 }
