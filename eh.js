@@ -145,7 +145,7 @@
 
   const allItems = [rope, tent, food, knife, book, candle];
 
-  const knapsackRecursive = (items, weight) => {
+  const knapsackRecursive = (items, totalWeight) => {
     // initialize
     const memoGrid = [];
     items.forEach(i => memoGrid.push([]));
@@ -153,7 +153,7 @@
     // helper function to access grid
     const helper = (itemIndex, capacity) => {
       // base cases
-      if (itemIndex >= items.length || capacity <= 0) {
+      if (itemIndex >= items.length || capacity === 0) {
         return 0;
       }
       if (memoGrid[itemIndex][capacity] !== undefined) {
@@ -178,7 +178,7 @@
       return result;
     };
 
-    const result = helper(0, weight);
+    const result = helper(0, totalWeight);
     console.log(memoGrid);
     return result;
   };

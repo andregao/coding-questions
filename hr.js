@@ -339,4 +339,30 @@
   // reverseWords('Foo bar baz quux')
 }
 
+{
+  const countTriplets = (arr, r) => {
+    const map2 = {};
+    const map3 = {};
+    let result = 0;
+    arr.forEach(n => {
+      // for each number:
+      // check if the number is a 3rd element in any previous group projections, if so add the group count to result
+      map3[n] && (result += map3[n]);
 
+      // treat the number as the 2nd element in a group,
+      // if it already exists in the 2nd-element project map, it means this element had 1st matching elements,
+      // get the count of its 1st matching elements, this is the number of 1st - 2nd partial groups
+      // then calculate its 3rd element value and add the count of partial groups to the 3rd-element projection map
+      map2[n] && (map3[n * r] = map3[n * r] ? map2[n] + map3[n * r] : map2[n]);
+
+      // treat the number as the 1st element in a group, calculate and add to the 2nd-element projection map
+      map2[n * r] = (map2[n * r] || 0) + 1;
+    });
+    console.log(map2, map3);
+    return result;
+  };
+  const allOnes = new Array(100);
+  allOnes.fill(1);
+  console.log(countTriplets([1, 3, 3, 9, 9, 27, 81], 3));
+  console.log(countTriplets(allOnes, 1));
+}
