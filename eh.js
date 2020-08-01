@@ -148,9 +148,9 @@
   const knapsackRecursive = (items, totalWeight) => {
     // initialize
     const memoGrid = [];
-    items.forEach(i => memoGrid.push([]));
+    items.forEach(() => memoGrid.push([]));
 
-    // helper function to access grid
+    // helper function to access grid and return result value
     const helper = (itemIndex, capacity) => {
       // base cases
       if (itemIndex >= items.length || capacity === 0) {
@@ -196,18 +196,20 @@
 
     items.forEach((item, index) => {
       const itemNum = index + 1;
-      const { value, weight } = item;
-      for (let capacity = 1; capacity <= totalWeight; capacity++) {
+      const { value, weight: itemWeight } = item;
+      for (let currentCapacity = 1; currentCapacity <= totalWeight; currentCapacity++) {
         // console.log('current capacity', capacity);
-        if (weight > capacity) {
-          grid[itemNum][capacity] = grid[itemNum - 1][capacity];
+        if (itemWeight > currentCapacity) { // leave item out
+          grid[itemNum][currentCapacity] = grid[itemNum - 1][currentCapacity];
           // console.log('overweight item:', itemNum);
           // console.log(grid);
         } else {
-          const value1 = value + grid[itemNum - 1][capacity - weight];
-          const value2 = grid[itemNum - 1][capacity];
+          // first case: put item in
+          const value1 = value + grid[itemNum - 1][currentCapacity - itemWeight];
+          // second case: leave item out
+          const value2 = grid[itemNum - 1][currentCapacity];
           // console.log('v1, v2', value1, value2);
-          grid[itemNum][capacity] = value1 > value2 ? value1 : value2;
+          grid[itemNum][currentCapacity] = value1 > value2 ? value1 : value2;
           // console.log(grid);
         }
       }
@@ -215,6 +217,6 @@
     console.log(grid);
     return grid[items.length][totalWeight];
   };
-  console.log(knapsackRecursive(allItems, 4));
+  // console.log(knapsackRecursive(allItems, 4));
   console.log(knapsackIterative(allItems, 4));
 }

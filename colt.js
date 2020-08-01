@@ -93,11 +93,11 @@
 
     while (arr[pointer] !== n) {
       let prevPointer = pointer;
-      if (arr[pointer] > n) {
+      if (arr[pointer] > n) { // move pointer left
         tail = pointer - 1;
         pointer = getMidIndex(head, pointer);
       } else {
-        head = pointer + 1;
+        head = pointer + 1; // move pointer right
         pointer = getMidIndex(pointer, tail);
       }
       console.log(head, pointer, tail);
@@ -184,10 +184,10 @@
   const insertionSort = arr => {
     for (let i = 1; i < arr.length; i++) {
       for (let j = i; j > 0 && arr[j] < arr[j - 1]; j--) {
-        console.log(`index = ${i}`, arr[j], arr[j - 1]);
-        console.log('before', arr);
+        // console.log(`index = ${i}`, arr[j], arr[j - 1]);
+        // console.log('before', arr);
         [arr[j - 1], arr[j]] = [arr[j], arr[j - 1]];
-        console.log('after', arr);
+        // console.log('after', arr);
       }
     }
     return arr;
@@ -215,10 +215,11 @@
         i++;
       }
     }
-    if (i !== a.length) {
+    // only one of the two if statements can be true
+    if (i !== a.length) { // handle left over elements in array a
       result = result.concat(a.slice(i));
     }
-    if (j !== b.length) {
+    if (j !== b.length) { // handle left over elements in array b
       result = result.concat(b.slice(j));
     }
     return result;
@@ -280,14 +281,6 @@
 
 {
   //radix sort
-  const getDigit = (num, index) => {
-    const s = String(num);
-    const sIndex = s.length - 1 - index;
-    if (sIndex < 0) {
-      return 0;
-    }
-    return Number(s[sIndex]);
-  };
 
   const getDigitMath = (num, index) => {
     num = Math.abs(num);
@@ -302,23 +295,33 @@
     return Math.floor(lowered % 10);
   };
 
-  const digitCount = num => {
-    let i = 0;
-    while (true) {
-      i++;
-      if (num < Math.pow(10, i)) {
-        break;
-      }
-    }
-    return i;
-  };
-
   const digitCount2 = num => {
     if (num === 0) {
       return 1;
     }
     return Math.floor(Math.log10(num)) + 1;
   };
+
+  const getDigit = (num, index) => {
+    const s = String(num);
+    const sIndex = s.length - 1 - index;
+    if (sIndex < 0) {
+      return 0;
+    }
+    return Number(s[sIndex]);
+  };
+
+  const digitCount = num => {
+    let i = 0;
+    while (true) {
+      i++;
+      if (num <= Math.pow(10, i)) {
+        break;
+      }
+    }
+    return i;
+  };
+
 
   const mostDigits = arr => {
     let max = 0;
@@ -337,12 +340,12 @@
         buckets[digit] === undefined && (buckets[digit] = []);
         buckets[digit].push(item);
       });
-      let result = [];
+      let iterationResult = [];
       buckets.forEach(item => {
         // forEach method skips empty items
-        result = result.concat(item);
+        iterationResult = iterationResult.concat(item);
       });
-      arr = result;
+      arr = iterationResult;
     }
     return arr;
   };
@@ -1055,6 +1058,7 @@
           console.log('neighbor:', neighbor);
           if (!visited[neighbor.name]) {
             const distance = distances[current.name] + neighbor.weight;
+            // if statement ignores path with more weight
             if (distance < (distances[neighbor.name] || Infinity)) {
               pq.insert(neighbor.name, distance);
               distances[neighbor.name] = distance;
